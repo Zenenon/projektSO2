@@ -1,0 +1,4 @@
+ToolSet: w64 9.0 (local)@C:\Users\wikto\Downloads\CLion-2022.2.3.win\bin\mingw
+Options: 
+
+Options:-DCMAKE_MAKE_PROGRAM=C:/Users/wikto/Downloads/CLion-2022.2.3.win/bin/ninja/win/ninja.exe
