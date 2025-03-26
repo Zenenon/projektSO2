@@ -1,0 +1,9 @@
+# ninja log v5
+1	1431	7647057457423718	CMakeFiles/so2_filozofowie.dir/main.cpp.obj	26e8789c93a85dcf
+1435	1973	7647057462766615	so2_filozofowie.exe	1e69e61c9fd5cc21
+6	2179	7647060104631379	CMakeFiles/so2_filozofowie.dir/main.cpp.obj	40b0d8186ed10351
+2181	2377	7647060106525670	so2_filozofowie.exe	1e69e61c9fd5cc21
+6	2050	7647069726061439	CMakeFiles/so2_filozofowie.dir/main.cpp.obj	40b0d8186ed10351
+2051	2285	7647069728337995	so2_filozofowie.exe	1e69e61c9fd5cc21
+6	2125	7647072229055837	CMakeFiles/so2_filozofowie.dir/main.cpp.obj	40b0d8186ed10351
+2126	2350	7647072231247220	so2_filozofowie.exe	1e69e61c9fd5cc21
