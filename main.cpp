@@ -5,24 +5,24 @@
 #include <chrono>
 #include <random>
 
-constexpr const size_t N = 5;  // Liczba filozofów i widelców
+constexpr const size_t N = 5;  // Number of philosophers (and forks)
 
 enum class State { THINKING, HUNGRY, EATING };
 
-// Funkcje zwracające indeksy sąsiadów filozofa
+// Get left and right neighbor indices
 size_t inline left(size_t i) { return (i - 1 + N) % N; }
 size_t inline right(size_t i) { return (i + 1) % N; }
 
-// Stan każdego filozofa
+// Philosophers' states
 State state[N];
 
-// Spinlock do synchronizacji (zamiast mutexa)
+// Spinlock instead of mutex
 class SpinLock {
     std::atomic_flag flag = ATOMIC_FLAG_INIT;
 public:
     void lock() {
         while (flag.test_and_set(std::memory_order_acquire)) {
-            std::this_thread::yield(); // Unikamy aktywnego blokowania CPU
+            std::this_thread::yield();
         }
     }
     void unlock() {
@@ -30,71 +30,73 @@ public:
     }
 };
 
-// Spinlock do synchronizacji dostępu do sekcji krytycznej
+// Synchronization
 SpinLock critical_region_lock;
 
-// Flagi widelców (true = wolny, false = zajęty)
+// Fork availability (true = free, false = taken)
 std::atomic<bool> forks[N] = { true, true, true, true, true };
 
-// Generator losowych czasów
+// Random time generator
 size_t random_time(size_t min, size_t max) {
     static thread_local std::mt19937 rnd(std::random_device{}());
     return std::uniform_int_distribution<>(min, max)(rnd);
 }
 
-// Sprawdza, czy filozof może jeść
+// Print function with consistent formatting
+void print_status(size_t i, const std::string& status) {
+    std::cout << "[" << i << "] " << status << "\n";
+}
+
+// Try to eat if forks are available
 void test(size_t i) {
     if (state[i] == State::HUNGRY && forks[i] && forks[right(i)]) {
-        // Jeśli oba widelce są wolne, filozof zaczyna jeść
         forks[i] = false;
         forks[right(i)] = false;
         state[i] = State::EATING;
+        print_status(i, "\t\tis EATING");
     }
 }
 
-// Filozof myśli przez losowy czas
+// Thinking phase
 void think(size_t i) {
     size_t duration = random_time(400, 800);
-    std::cout << i << " myśli przez " << duration << "ms\n";
+    print_status(i, "is THINKING for " + std::to_string(duration) + "ms");
     std::this_thread::sleep_for(std::chrono::milliseconds(duration));
 }
 
-// Filozof próbuje podnieść widelce
+// Pick up forks (or wait)
 void take_forks(size_t i) {
-    critical_region_lock.lock();  // Sekcja krytyczna
+    critical_region_lock.lock();
     state[i] = State::HUNGRY;
-    std::cout << i << " jest głodny.\n";
-    test(i);  // Sprawdza, czy może jeść
+    print_status(i, "\t\tis HUNGRY");
+    test(i);
     critical_region_lock.unlock();
 
-    // Jeśli nie zdobył widelców, czeka aktywnie (unikamy semaforów)
     while (state[i] != State::EATING) {
         std::this_thread::yield();
     }
 }
 
-// Filozof je przez losowy czas
+// Eating phase
 void eat(size_t i) {
     size_t duration = random_time(400, 800);
-    std::cout << i << " je przez " << duration << "ms\n";
+    print_status(i, "\t\t is eating for " + std::to_string(duration) + "ms");
     std::this_thread::sleep_for(std::chrono::milliseconds(duration));
 }
 
-// Filozof odkłada widelce
+// Put down forks
 void put_forks(size_t i) {
-    critical_region_lock.lock();  // Sekcja krytyczna
+    critical_region_lock.lock();
     state[i] = State::THINKING;
     forks[i] = true;
     forks[right(i)] = true;
-    std::cout << i << " odkłada widelce.\n";
-
-    // Sprawdza, czy sąsiedzi mogą jeść
+    print_status(i, "\t\tis DONE eating and put down forks");
     test(left(i));
     test(right(i));
     critical_region_lock.unlock();
 }
 
-// Funkcja filozofa
+// Philosopher function
 void philosopher(size_t i) {
     while (true) {
         think(i);
@@ -104,14 +106,15 @@ void philosopher(size_t i) {
     }
 }
 
-// Uruchamianie wątków filozofów
+// Start threads
 int main() {
+    std::cout << "Dining Philosophers Problem - Simulation Start\n\n";
+
     std::vector<std::thread> philosophers;
     for (size_t i = 0; i < N; i++) {
         philosophers.emplace_back(philosopher, i);
     }
 
-    // Dołączamy wątki (nigdy się nie kończą)
     for (auto& p : philosophers) {
         p.join();
     }
