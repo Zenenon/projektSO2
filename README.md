@@ -1,7 +1,7 @@
-**Sprawozdanie – Problem ucztujących filozofów**
+**Sprawozdanie – Problem jedzących filozofów**
 
 **Opis problemu**
-Problem ucztujących filozofów to klasyczny problem synchronizacji, w którym grupa filozofów siedzi wokół stołu, między którymi leżą widelce.
+Problem jedzących filozofów to klasyczny problem synchronizacji, w którym grupa filozofów siedzi wokół stołu, między którymi leżą widelce.
 Każdy filozof cyklicznie myśli, jest głodny i spożywa posiłek. Aby zjeść, filozof musi podnieść dwa widelce – jeden po swojej lewej i jeden po prawej stronie.
 Problem polega na zapewnieniu, że filozofowie mogą jeść bez ryzyka zakleszczenia (deadlock) lub zagłodzenia (starvation).
 
