@@ -1,7 +1,7 @@
-**Sprawozdanie – Problem ucztujących filozofów**
+**Sprawozdanie – Problem jedzących filozofów**
 
 **Opis problemu**
-Problem ucztujących filozofów to klasyczny problem synchronizacji, w którym grupa filozofów siedzi wokół stołu, między którymi leżą widelce.
+Problem jedzących filozofów to klasyczny problem synchronizacji, w którym grupa filozofów siedzi wokół stołu, między którymi leżą widelce.
 Każdy filozof cyklicznie myśli, jest głodny i spożywa posiłek. Aby zjeść, filozof musi podnieść dwa widelce – jeden po swojej lewej i jeden po prawej stronie.
 Problem polega na zapewnieniu, że filozofowie mogą jeść bez ryzyka zakleszczenia (deadlock) lub zagłodzenia (starvation).
 
@@ -23,7 +23,7 @@ Sekcje krytyczne w programie występują w miejscach, gdzie kilka wątków może
 - **Sekcja krytyczna 3:** Raportowanie stanu filozofów – dostęp do konsoli jest również chroniony, aby uniknąć zakłóceń w wyświetlanych komunikatach.
 
 **Rozwiązanie:**  
-- Zamiast gotowych mechanizmów synchronizacji (`mutex`, `lock_guard`) zastosowano **SpinLock**, który został zaimplementowany ręcznie.
+- Zastosowano **SpinLock**, który został zaimplementowany ręcznie.
 - SpinLock blokuje zasób poprzez aktywne oczekiwanie na jego dostępność, co spełnia wymaganie projektu dotyczące ręcznej implementacji synchronizacji.  
 - Aby uniknąć zakleszczenia, zastosowano **hierarchię zasobów**, która wymusza, aby filozofowie zawsze podnosili widelce w określonej kolejności – od widelca o niższym numerze do wyższego.
 - Ostatni filozof zmienia kolejność, by zachować spójność i uniknąć kolizji.
