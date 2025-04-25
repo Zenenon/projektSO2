@@ -1,4 +1,5 @@
 **Wiktor Idzik - 272938**
+
 **Sprawozdanie – Problem jedzących filozofów**
 
 **Opis problemu**
